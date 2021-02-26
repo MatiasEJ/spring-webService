@@ -1,5 +1,6 @@
 package com.mej.mobileappws.service;
 
+import com.mej.mobileappws.model.request.OperationStatusModel;
 import com.mej.mobileappws.shared.dto.UserDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -10,4 +11,6 @@ public interface UserService extends UserDetailsService {
     UserDto getUserByUserId(String userID);
     
     UserDto updateUser(String userId, UserDto userDto);
+    
+    void deleteUser(String userId);
 }

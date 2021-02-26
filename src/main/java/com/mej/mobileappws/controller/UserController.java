@@ -1,8 +1,9 @@
 package com.mej.mobileappws.controller;
 
-import com.mej.mobileappws.exceptions.UserServiceException;
+import com.mej.mobileappws.model.request.OperationStatusModel;
+import com.mej.mobileappws.model.request.RequestOperationName;
+import com.mej.mobileappws.model.request.RequestOperationStatus;
 import com.mej.mobileappws.model.request.UserDetailRequestModel;
-import com.mej.mobileappws.model.response.ErrorMessages;
 import com.mej.mobileappws.model.response.UserRest;
 import com.mej.mobileappws.service.impl.UserServiceImpl;
 import com.mej.mobileappws.shared.dto.UserDto;
@@ -38,9 +39,9 @@ public class UserController {
         UserRest returnValue = new UserRest();
         UserDto  userDto     = new UserDto();
         
-//        if (userDetails.getFirstName().isEmpty()){
-//            throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage()+" "+userDetails.getFirstName());
-//        }
+        //        if (userDetails.getFirstName().isEmpty()){
+        //            throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage()+" "+userDetails.getFirstName());
+        //        }
         
         
         BeanUtils.copyProperties(userDetails, userDto);
@@ -57,19 +58,29 @@ public class UserController {
         produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public UserRest updateUser(
         @RequestBody UserDetailRequestModel userDetails,
-              @PathVariable String userId) {
+        @PathVariable String userId) {
         UserRest returnValue = new UserRest();
         UserDto  userDto     = new UserDto();
-    
+        
         BeanUtils.copyProperties(userDetails, userDto);
-        UserDto createdUser = userService.updateUser(userId,userDto);
+        UserDto createdUser = userService.updateUser(userId, userDto);
         BeanUtils.copyProperties(createdUser, returnValue);
         return returnValue;
     }
     
-    @DeleteMapping
-    public String deleteUser() {
-        return "user deleted";
+    @DeleteMapping(
+        path = "/{userId}",
+        produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
+    )
+    public OperationStatusModel deleteUser(@PathVariable String userId) {
+        OperationStatusModel returnValue = new OperationStatusModel();
+        returnValue.setOperationName(RequestOperationName.DELETE.name());
+        
+        userService.deleteUser(userId);
+        
+        returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        
+        return returnValue;
     }
     
 }

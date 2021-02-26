@@ -1,6 +1,7 @@
 package com.mej.mobileappws.service.impl;
 
 import com.mej.mobileappws.exceptions.UserServiceException;
+import com.mej.mobileappws.model.request.OperationStatusModel;
 import com.mej.mobileappws.model.response.ErrorMessages;
 import com.mej.mobileappws.repository.UserRepository;
 import com.mej.mobileappws.entity.UserEntity;
@@ -70,7 +71,7 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findByUserId(userId);
       
         if(userEntity== null){
-            throw new UsernameNotFoundException(userId);
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
         
         BeanUtils.copyProperties(userEntity,returnValue);
@@ -95,6 +96,17 @@ public class UserServiceImpl implements UserService {
         
     }
     
+    @Override
+    public void deleteUser(String userId) {
+    
+        UserEntity userEntity = userRepository.findByUserId(userId);
+    
+        if (userEntity == null) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+        userRepository.delete(userEntity);
+    
+    }
     
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
