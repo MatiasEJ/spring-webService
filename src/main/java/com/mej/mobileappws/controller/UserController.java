@@ -38,9 +38,9 @@ public class UserController {
         UserRest returnValue = new UserRest();
         UserDto  userDto     = new UserDto();
         
-        if (userDetails.getFirstName().isEmpty()){
-            throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage()+" "+userDetails.getFirstName());
-        }
+//        if (userDetails.getFirstName().isEmpty()){
+//            throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage()+" "+userDetails.getFirstName());
+//        }
         
         
         BeanUtils.copyProperties(userDetails, userDto);
@@ -51,9 +51,20 @@ public class UserController {
         
     }
     
-    @PutMapping
-    public String updateUser() {
-        return "update user was called";
+    @PutMapping(
+        path = "/{userId}",
+        consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
+        produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public UserRest updateUser(
+        @RequestBody UserDetailRequestModel userDetails,
+              @PathVariable String userId) {
+        UserRest returnValue = new UserRest();
+        UserDto  userDto     = new UserDto();
+    
+        BeanUtils.copyProperties(userDetails, userDto);
+        UserDto createdUser = userService.updateUser(userId,userDto);
+        BeanUtils.copyProperties(createdUser, returnValue);
+        return returnValue;
     }
     
     @DeleteMapping

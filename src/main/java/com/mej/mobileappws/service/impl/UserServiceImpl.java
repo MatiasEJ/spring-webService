@@ -1,5 +1,7 @@
 package com.mej.mobileappws.service.impl;
 
+import com.mej.mobileappws.exceptions.UserServiceException;
+import com.mej.mobileappws.model.response.ErrorMessages;
 import com.mej.mobileappws.repository.UserRepository;
 import com.mej.mobileappws.entity.UserEntity;
 import com.mej.mobileappws.service.UserService;
@@ -74,6 +76,23 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(userEntity,returnValue);
         
         return returnValue;
+    }
+    
+    @Override
+    public UserDto updateUser(String userId, UserDto userDto) {
+        UserDto returnValue = new UserDto();
+        UserEntity userEntity = userRepository.findByUserId(userId);
+    
+        if (userEntity == null) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+        
+        userEntity.setFirstName(userDto.getFirstName());
+        userEntity.setLastName(userDto.getLastName());
+        UserEntity updatedUserDetails =  userRepository.save(userEntity);
+        BeanUtils.copyProperties(updatedUserDetails,returnValue);
+        return returnValue;
+        
     }
     
     
