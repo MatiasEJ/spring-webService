@@ -1,11 +1,16 @@
 package com.mej.mobileappws.model.response;
 
 
+import org.apache.tomcat.jni.Address;
+
+import java.util.List;
+
 public class UserRest {
     private String userId;
     private String firstName;
     private String lastName;
     private String email;
+    private List<AddressesRest> addressesRests;
     
     public String getUserId() {
         return userId;

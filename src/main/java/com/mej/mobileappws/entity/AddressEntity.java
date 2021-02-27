@@ -10,7 +10,7 @@ public class AddressEntity implements Serializable {
     private static final long    serialVersionUID = 1L;
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private long id;
     @Column(length = 30,nullable = false)
     private String addressId;
@@ -26,8 +26,8 @@ public class AddressEntity implements Serializable {
     private              String  type;
     
     @ManyToOne
-    @JoinColumn(name = "users_id")
-    private              UserDto userDetails;
+    @JoinColumn(name = "user_id")
+    private              UserEntity userDetails;
     
     
     public long getId() {
@@ -86,11 +86,15 @@ public class AddressEntity implements Serializable {
         this.type = type;
     }
     
-    public UserDto getUserDetails() {
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+    
+    public UserEntity getUserDetails() {
         return userDetails;
     }
     
-    public void setUserDetails(UserDto userDetails) {
+    public void setUserDetails(UserEntity userDetails) {
         this.userDetails = userDetails;
     }
 }

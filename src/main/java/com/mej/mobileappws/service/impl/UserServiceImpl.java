@@ -5,8 +5,10 @@ import com.mej.mobileappws.exceptions.UserServiceException;
 import com.mej.mobileappws.model.response.ErrorMessages;
 import com.mej.mobileappws.repository.UserRepository;
 import com.mej.mobileappws.service.UserService;
+import com.mej.mobileappws.shared.dto.AddressDTO;
 import com.mej.mobileappws.shared.dto.UserDto;
 import com.mej.mobileappws.shared.dto.Utils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,18 +40,25 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new RuntimeException("Record already exist");
         }
+
+        for (int i = 0; i<user.getAddresses().size(); i++){
+            AddressDTO address = user.getAddresses().get(i);
+            address.setUserDetails(user);
+            address.setAddressId(utils.generateAddressId(30));
+            user.getAddresses().set(i, address);
+        }
+      
+        ModelMapper modelMapper = new ModelMapper();
+        UserEntity userEntity = modelMapper.map(user, UserEntity.class);
         
-        UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(user, userEntity);
+        
         String publicUserId = utils.generateUserId(30);
-        
         userEntity.setUserId(publicUserId);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         
         UserEntity storedUserDetails = userRepository.save(userEntity);
         
-        UserDto returnValue = new UserDto();
-        BeanUtils.copyProperties(storedUserDetails, returnValue);
+        UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
         
         return returnValue;
     }

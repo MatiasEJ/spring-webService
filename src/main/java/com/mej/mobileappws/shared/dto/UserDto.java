@@ -14,18 +14,18 @@ public class UserDto implements Serializable {
     private              String           encryptedPassword;
     private              String           emailVerificationToken;
     private              Boolean          emailVerificationStatus = false;
-    private              List<AddressDTO> addressDTOList;
+    private              List<AddressDTO> addresses;
     
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
     
-    public List<AddressDTO> getAddressDTOList() {
-        return addressDTOList;
+    public List<AddressDTO> getAddresses() {
+        return addresses;
     }
     
-    public void setAddressDTOList(List<AddressDTO> addressDTOList) {
-        this.addressDTOList = addressDTOList;
+    public void setAddresses(List<AddressDTO> addresses) {
+        this.addresses = addresses;
     }
     
     public long getId() {

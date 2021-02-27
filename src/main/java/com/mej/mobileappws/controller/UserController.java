@@ -40,13 +40,12 @@ public class UserController {
         consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
         produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public UserRest createUser(@RequestBody UserDetailRequestModel userDetails) throws Exception {
-        UserRest returnValue = new UserRest();
-        
+        UserRest returnValue;
         ModelMapper modelMapper = new ModelMapper();
         UserDto  userDto     =    modelMapper.map(userDetails,UserDto.class);
-       
         UserDto createdUser = userService.createUser(userDto);
-        BeanUtils.copyProperties(createdUser, returnValue);
+        returnValue = modelMapper.map(createdUser,UserRest.class);
+        
         return returnValue;
         
         
