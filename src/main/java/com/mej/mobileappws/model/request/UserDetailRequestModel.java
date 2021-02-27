@@ -1,13 +1,25 @@
 package com.mej.mobileappws.model.request;
 
 
+import org.apache.tomcat.jni.Address;
+
+import java.util.List;
+
 public class UserDetailRequestModel {
    
     private String firstName;
     private String lastName;
     private String email;
     private String password;
+    List<AddressRequestModel> addresses;
     
+    public List<AddressRequestModel> getAddresses() {
+        return addresses;
+    }
+    
+    public void setAddresses(List<AddressRequestModel> addresses) {
+        this.addresses = addresses;
+    }
     
     public String getFirstName() {
         return firstName;
