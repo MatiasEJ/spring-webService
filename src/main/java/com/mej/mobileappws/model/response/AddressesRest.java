@@ -2,11 +2,11 @@ package com.mej.mobileappws.model.response;
 
 public class AddressesRest {
     private String addressId;
-    private              String  city;
-    private              String  country;
-    private              String  streetName;
-    private              String  postalCode;
-    private              String  type;
+    private String city;
+    private String country;
+    private String streetName;
+    private String postalCode;
+    private String type;
     
     public String getAddressId() {
         return addressId;
