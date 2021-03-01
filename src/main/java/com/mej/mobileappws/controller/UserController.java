@@ -14,6 +14,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -115,8 +117,8 @@ public class UserController {
     //    http://localhost:8080/mobile-app-ws/users/asdasds/addresses
     @GetMapping(
         path = "/{userId}/addresses",
-        produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public List<AddressesRest> getUserAddresses(@PathVariable String userId) {
+        produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE, "application/hal+json"})
+    public CollectionModel<AddressesRest> getUserAddresses(@PathVariable String userId) {
         ModelMapper         modelMapper  = new ModelMapper();
         List<AddressesRest> addressesRestList  = new ArrayList<>();
         List<AddressDTO>    addressesDto = addressesService.getAddresses(userId);
@@ -136,17 +138,17 @@ public class UserController {
                 Link userLink      = linkTo(methodOn(UserController.class).getUser(userId)).withRel("user");
     
                 addressesRest.add(userLink);
-                
-                
             });
+            
+            return CollectionModel.of(addressesRestList);
             
             
         }
-        return addressesRestList;
+        return  CollectionModel.empty();
     }
     
-    @GetMapping(path = "/{userId}/addresses/{addressId}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public AddressesRest getUserAddress(@PathVariable String addressId, @PathVariable String userId) {
+    @GetMapping(path = "/{userId}/addresses/{addressId}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE,"application/hal+json"})
+    public EntityModel<AddressesRest> getUserAddress(@PathVariable String addressId, @PathVariable String userId) {
         AddressDTO  addressDTO  = addressService.getAddress(addressId);
         ModelMapper modelMapper = new ModelMapper();
         
@@ -160,7 +162,8 @@ public class UserController {
         addressesRestModel.add(addressLink);
         addressesRestModel.add(userLink);
         addressesRestModel.add(addressesLink);
-        return addressesRestModel;
+        
+        return EntityModel.of(addressesRestModel) ;
     }
     
 }
