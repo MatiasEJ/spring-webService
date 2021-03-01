@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,11 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
-@RequestMapping("users")
+@RequestMapping("/users")
 public class UserController {
     
     @Autowired
@@ -120,22 +124,29 @@ public class UserController {
             Type listType = new TypeToken<List<AddressesRest>>() {
             }.getType();
             returnValue = modelMapper.map(addressesDto, listType);
-            
         }
-        
-        
         return returnValue;
     }
     
-    @GetMapping(
-        path = "/{userId}/addresses/{addressId}",
-        produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public AddressesRest getUserAddress(@PathVariable String addressId) {
+    @GetMapping(path = "/{userId}/addresses/{addressId}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public AddressesRest getUserAddress(@PathVariable String addressId, @PathVariable String userId) {
         AddressDTO  addressDTO  = addressService.getAddress(addressId);
         ModelMapper modelMapper = new ModelMapper();
         
         
-        return modelMapper.map(addressDTO, AddressesRest.class);
+        Link addressLink = linkTo(methodOn(UserController.class)
+                                      .getUserAddress(userId, addressId)).withSelfRel();
+        Link userLink = linkTo(UserController.class).slash(userId)
+                                                    .withRel("user");
+        Link addressesLink = linkTo(UserController.class).slash(userId)
+                                                         .slash("addresses")
+                                                         .withRel("addresses");
+        
+        AddressesRest addressesRestModel = modelMapper.map(addressDTO, AddressesRest.class);
+        addressesRestModel.add(addressLink);
+        addressesRestModel.add(userLink);
+        addressesRestModel.add(addressesLink);
+        return addressesRestModel;
     }
     
 }
