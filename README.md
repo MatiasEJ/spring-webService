@@ -4,6 +4,7 @@ Proyecto Api Rest utilizando Spring Security.
 - MySQL
 - HATEOAS
 - Testing JUnit5, Mockito
+    
 ::TODO
 - Deploy en AWS / Heroku 
 - AWS Simple Email Service
