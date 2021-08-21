@@ -3,7 +3,7 @@ package com.mej.mobileappws.service.impl;
 import com.mej.mobileappws.entity.UserEntity;
 import com.mej.mobileappws.repository.UserRepository;
 import com.mej.mobileappws.shared.dto.UserDto;
-import org.junit.Assert;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -44,8 +44,8 @@ class UserServiceImplTest {
     void getUser() {
         when(userRepository.findByEmail(anyString())).thenReturn(userEntity);
         UserDto userDto = userService.getUser(EMAIL);
-        Assert.assertNotNull(userDto);
-        Assert.assertEquals(FIRST_NAME, userDto.getFirstName());
+        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(FIRST_NAME, userDto.getFirstName());
     }
     
     
@@ -53,7 +53,7 @@ class UserServiceImplTest {
     void testGetUser_UsernameNotFoundException() {
         when(userRepository.findByEmail(anyString())).thenReturn(null);
         
-        Assert.assertThrows(UsernameNotFoundException.class,()->{
+        Assertions.assertThrows(UsernameNotFoundException.class,()->{
             userService.getUser(EMAIL);
         });
     }
